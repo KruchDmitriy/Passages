@@ -6,15 +6,17 @@ import java.io.Serializable;
  * Created by VladVin on 17.10.2015.
  */
 public class BoardChange implements Serializable {
-    public enum Edge {LEFT, TOP};
+    public enum Edge {LEFT, TOP}
     private int i;
     private int j;
     private Edge edge;
+    private Cell.WHOS reservedBy;
 
-    public BoardChange(int i, int j, Edge edge) {
+    public BoardChange(int i, int j, Edge edge, Cell.WHOS reservedBy) {
         this.i = i;
         this.j = j;
         this.edge = edge;
+        this.reservedBy = reservedBy;
     }
 
     public int getI() {
@@ -29,6 +31,10 @@ public class BoardChange implements Serializable {
         return edge;
     }
 
+    public Cell.WHOS getReservedBy() {
+        return reservedBy;
+    }
+
     public void setI(int i) {
         this.i = i;
     }
@@ -39,5 +45,9 @@ public class BoardChange implements Serializable {
 
     public void setEdge(Edge edge) {
         this.edge = edge;
+    }
+
+    public void setReservedBy(Cell.WHOS reservedBy) {
+        this.reservedBy = reservedBy;
     }
 }

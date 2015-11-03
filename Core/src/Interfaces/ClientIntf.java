@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 public interface ClientIntf extends Remote {
     void updateRooms(List<Room> rooms);
-    void updateBoard(BoardChange boardChange, UUID playerId);
-    void startGame(Scores scores);
+    void updateBoard(BoardChange boardChange, Scores scores, UUID playerId, boolean yourTurn);
+    void startGame();
     void gameOver(Scores scores);
 }
