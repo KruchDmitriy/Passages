@@ -4,6 +4,7 @@ import DataStructures.Player;
 import DataStructures.Room;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -14,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -86,12 +88,20 @@ public class View {
         ListView<String> list = new ListView<String>();
         list.setItems(FXCollections.observableArrayList(items));
 
+        list.setOnMouseClicked(event ->
+                System.out.println("clicked on " +
+                        list.getSelectionModel().getSelectedItem()));
+
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(list);
 
         Scene scene = new Scene(borderPane, width, height);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public void setBoard(Board board) {

@@ -33,12 +33,12 @@ public class Client implements IClient {
     }
 
     @Override
-    public void updateBoard(BoardChange boardChange, UUID playerId) {
+    public void updateBoard(BoardChange boardChange, Scores scores, UUID playerId, boolean yourTurn) {
 
     }
 
     @Override
-    public void startGame(Scores scores) {
+    public void startGame() {
 
     }
 
