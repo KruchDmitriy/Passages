@@ -2,20 +2,16 @@ package DataStructures;
 
 import java.io.Serializable;
 
-/**
- * Created by VladVin on 17.10.2015.
- */
 public class BoardChange implements Serializable {
-    public enum Edge {LEFT, TOP}
     private int i;
     private int j;
-    private Edge edge;
-    private Cell.WHOS reservedBy;
+    private Edge.EdgeType edgeType;
+    private Edge.WHO reservedBy;
 
-    public BoardChange(int i, int j, Edge edge, Cell.WHOS reservedBy) {
+    public BoardChange(int i, int j, Edge.EdgeType edgeType, Edge.WHO reservedBy) {
         this.i = i;
         this.j = j;
-        this.edge = edge;
+        this.edgeType = edgeType;
         this.reservedBy = reservedBy;
     }
 
@@ -27,11 +23,11 @@ public class BoardChange implements Serializable {
         return j;
     }
 
-    public Edge getEdge() {
-        return edge;
+    public Edge.EdgeType getEdgeType() {
+        return edgeType;
     }
 
-    public Cell.WHOS getReservedBy() {
+    public Edge.WHO getReservedBy() {
         return reservedBy;
     }
 
@@ -43,11 +39,11 @@ public class BoardChange implements Serializable {
         this.j = j;
     }
 
-    public void setEdge(Edge edge) {
-        this.edge = edge;
+    public void setEdge(Edge.EdgeType edgeType) {
+        this.edgeType = edgeType;
     }
 
-    public void setReservedBy(Cell.WHOS reservedBy) {
+    public void setReservedBy(Edge.WHO reservedBy) {
         this.reservedBy = reservedBy;
     }
 }

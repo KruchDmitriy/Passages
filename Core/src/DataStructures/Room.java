@@ -3,19 +3,16 @@ package DataStructures;
 import java.io.Serializable;
 import java.util.UUID;
 
-/**
- * Created by VladVin on 17.10.2015.
- */
 public class Room implements Serializable {
     private String name;
     private UUID id;
-    private int nsize;
+    private int size;
     private Player bluePlayer;
     private Player redPlayer;
 
-    public Room(String name, int nsize, Player bluePlayer) {
+    public Room(String name, int size, Player bluePlayer) {
         this.name = name;
-        this.nsize = nsize;
+        this.size = size;
         this.bluePlayer = bluePlayer;
         this.id = UUID.randomUUID();
     }
@@ -28,8 +25,8 @@ public class Room implements Serializable {
         return id;
     }
 
-    public int getNsize() {
-        return nsize;
+    public int getSize() {
+        return size;
     }
 
     public Player getBluePlayer() {
@@ -40,8 +37,8 @@ public class Room implements Serializable {
         return redPlayer;
     }
 
-    public void setNsize(int nsize) {
-        this.nsize = nsize;
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public void setBluePlayer(Player bluePlayer) {

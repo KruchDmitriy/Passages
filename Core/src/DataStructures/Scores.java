@@ -2,9 +2,6 @@ package DataStructures;
 
 import java.io.Serializable;
 
-/**
- * Created by VladVin on 17.10.2015.
- */
 public class Scores implements Serializable {
     int blueScore;
     int redScore;
