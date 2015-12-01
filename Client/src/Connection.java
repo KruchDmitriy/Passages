@@ -9,6 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.UUID;
 
 public class Connection {
     public enum ConnectionType { DEBUG, RELEASE;}
@@ -56,6 +57,14 @@ public class Connection {
 
     public void register(String name) {
         server.register(name);
+    }
+
+    public void createRoom(String roomName, int size, UUID playerId) {
+        server.createRoom(roomName, size, playerId);
+    }
+
+    public void joinRoom(UUID roomId, UUID playerId) {
+        server.joinRoom(roomId, playerId);
     }
 
     public List<Room> getRooms() {

@@ -13,6 +13,6 @@ public interface IServer extends Remote {
     void createRoom(String roomName, int size, UUID playerId);
     void leaveRoom(UUID roomId, UUID playerId);
     List<Room> getRooms();
-    void takeEdge(BoardChange boardChange, UUID playerId);
+    void takeEdge(BoardChange boardChange, UUID roomId);
     void error(String errorMessage);
 }

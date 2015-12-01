@@ -12,8 +12,10 @@ import java.util.UUID;
 public interface IClient extends Remote {
     void setPlayer(Player player);
     void updateRooms(List<Room> rooms);
-    void updateBoard(BoardChange boardChange, Scores scores, UUID playerId, boolean yourTurn);
+    void updateBoard(BoardChange boardChange);
     void startGame();
-    void gameOver(Scores scores);
-    void error(String errorMessage) throws Exception;
+    void setRoom(Room room);
+    void setPlayerColor(Player.Color color);
+    void gameOver();
+    public void error(String errorMessage);
 }

@@ -6,8 +6,7 @@ import java.util.UUID;
 
 public class Client implements IClient {
     private Player player;
-    private List<Room> rooms;
-    private Board board;
+    private Room room;
     private View view;
     private Connection connection;
 
@@ -24,31 +23,45 @@ public class Client implements IClient {
             connection.sendError("Player already set");
         }
         this.player = player;
+        view.setPlayer(player);
+    }
+
+    public void setPlayerColor(Player.Color color) {
+        player.setColor(color);
     }
 
     @Override
     public void updateRooms(List<Room> rooms) {
-        this.rooms = rooms;
+        view.setWindowSize(400, 275);
         view.chooseTheRoom(rooms);
     }
 
     @Override
-    public void updateBoard(BoardChange boardChange, Scores scores, UUID playerId, boolean yourTurn) {
+    public void setRoom(Room room) {
+        assert room.getBoard() != null;
 
+        this.room = room;
+        view.setRoom(room);
+    }
+
+    @Override
+    public void updateBoard(BoardChange boardChange) {
+        view.updateBoard(boardChange);
     }
 
     @Override
     public void startGame() {
+        view.setWindowSize(500, 500);
+        view.startGame();
+    }
+
+    @Override
+    public void gameOver() {
 
     }
 
     @Override
-    public void gameOver(Scores scores) {
-
-    }
-
-    @Override
-    public void error(String errorMessage) throws Exception {
-        throw new Exception(errorMessage);
+    public void error(String errorMessage) {
+        System.out.println(errorMessage);
     }
 }

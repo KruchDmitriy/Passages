@@ -28,4 +28,13 @@ public class Cell implements Serializable {
             reservedBy = who;
         }
     }
+
+    public boolean isInCell(Edge edge) {
+        for (Edge e : edges) {
+            if (e == edge) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

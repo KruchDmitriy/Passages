@@ -6,15 +6,21 @@ import java.util.UUID;
 public class Room implements Serializable {
     private String name;
     private UUID id;
-    private int size;
+    private Board board;
     private Player bluePlayer;
     private Player redPlayer;
+    private Scores scores;
 
     public Room(String name, int size, Player bluePlayer) {
         this.name = name;
-        this.size = size;
+        board = new Board(size);
         this.bluePlayer = bluePlayer;
         this.id = UUID.randomUUID();
+        scores = new Scores(0, 0);
+    }
+
+    public Board getBoard() {
+        return board;
     }
 
     public String getName() {
@@ -26,7 +32,7 @@ public class Room implements Serializable {
     }
 
     public int getSize() {
-        return size;
+        return board.getSize();
     }
 
     public Player getBluePlayer() {
@@ -37,8 +43,12 @@ public class Room implements Serializable {
         return redPlayer;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void unbindPlayer(Player player) {
+        if (bluePlayer == player) {
+            bluePlayer = null;
+        } else if (redPlayer == player) {
+            redPlayer = null;
+        }
     }
 
     public void setBluePlayer(Player bluePlayer) {
@@ -49,7 +59,15 @@ public class Room implements Serializable {
         this.redPlayer = redPlayer;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setScores(Scores scores) {
+        this.scores = scores;
+    }
+
+    public Scores getScores() {
+        return scores;
+    }
+
+    public boolean isFree() {
+        return bluePlayer == null || redPlayer == null;
     }
 }

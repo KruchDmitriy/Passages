@@ -3,8 +3,13 @@ package DataStructures;
 import java.io.Serializable;
 
 public class Scores implements Serializable {
-    int blueScore;
-    int redScore;
+    private int blueScore;
+    private int redScore;
+
+    public Scores() {
+        this.blueScore = 0;
+        this.redScore = 0;
+    }
 
     public Scores(int blueScore, int redScore) {
         this.blueScore = blueScore;
@@ -19,11 +24,11 @@ public class Scores implements Serializable {
         return redScore;
     }
 
-    public void setBlueScore(int blueScore) {
-        this.blueScore = blueScore;
+    public void incBlueScore() {
+        blueScore++;
     }
 
-    public void setRedScore(int redScore) {
-        this.redScore = redScore;
+    public void incRedScore() {
+        redScore++;
     }
 }
