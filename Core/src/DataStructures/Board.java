@@ -13,16 +13,24 @@ public class Board {
     public Board(int size) {
         this.size = size;
         edges = new Vector<>(2 * size * (size + 1));
-        int horz_i = 0;
-        int vert_i = 0;
-        while(horz_i + vert_i < 2 * size * (size + 1)) {
-            for (int h_i = 0; h_i < size; horz_i++, h_i++) {
-                edges.add(horz_i + vert_i, new Edge(Edge.EdgeType.HORZ));
-                System.out.println(horz_i + " " + vert_i + " horz" );
+
+        Edge stub = new Edge(Edge.EdgeType.HORZ, 0, 0);
+        for (int i = 0; i < 2 * size * (size + 1); i++) {
+            edges.add(stub);
+        }
+
+        for (int i = 0; i < size + 1; i++) {
+            for (int h_j = 0; h_j < size; h_j++) {
+                System.out.println("i " + i + " h_j " + h_j);
+                System.out.println("idx " + (i * (2 * size + 1) + h_j));
+                edges.setElementAt(new Edge(Edge.EdgeType.HORZ, i, h_j),
+                        i * (2 * size + 1) + h_j);
             }
-            for (int v_i = 0; v_i < size + 1; vert_i++, v_i++) {
-                edges.add(horz_i + vert_i, new Edge(Edge.EdgeType.VERT));
-                System.out.println(horz_i + " " + vert_i + " vert" );
+            for (int v_i = 0; v_i < size; v_i++) {
+                System.out.println("v_i " + v_i + " i " + i);
+                System.out.println("idx " + (v_i * (2 * size + 1) + size + i));
+                edges.setElementAt(new Edge(Edge.EdgeType.VERT, v_i, i),
+                        v_i * (2 * size + 1) + size + i);
             }
         }
 
@@ -35,6 +43,15 @@ public class Board {
             edgeCell.add(edges.elementAt(idx + size + 1));
             edgeCell.add(edges.elementAt(idx + 2 * size + 1));
             cells.add(new Cell(edgeCell));
+        }
+    }
+
+    public Board(Board board) {
+        this(board.getSize());
+
+        for (int i = 0; i < 2 * size * (size + 1); i++) {
+            edges.elementAt(i).setReservedBy(
+                    board.getEdges().elementAt(i).getReservedBy());
         }
     }
 
@@ -62,10 +79,8 @@ public class Board {
 
     public Edge getEdge(Edge.EdgeType type, int i, int j) {
         if (type == Edge.EdgeType.HORZ) {
-            System.out.println("getEdge " + i + " " + j);
             return getHorizontalEdges().get(i * size + j);
         } else {
-            System.out.println("getEdge " + i + " " + j);
             return getVerticalEdges().get(i * (size + 1) + j);
         }
     }

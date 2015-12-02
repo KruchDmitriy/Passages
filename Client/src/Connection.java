@@ -1,3 +1,4 @@
+import DataStructures.BoardChange;
 import DataStructures.Room;
 import Interfaces.IClient;
 import Interfaces.IServer;
@@ -73,5 +74,9 @@ public class Connection {
 
     public void sendError(String errorMessage) {
         server.error(errorMessage);
+    }
+
+    public void takeEdge(BoardChange boardChange, UUID roomId) {
+        server.takeEdge(boardChange, roomId);
     }
 }

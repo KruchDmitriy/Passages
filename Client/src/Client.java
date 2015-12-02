@@ -40,8 +40,9 @@ public class Client implements IClient {
     public void setRoom(Room room) {
         assert room.getBoard() != null;
 
-        this.room = room;
-        view.setRoom(room);
+        Room r = new Room(room);
+        this.room = r;
+        view.setRoom(r);
     }
 
     @Override

@@ -19,6 +19,15 @@ public class Room implements Serializable {
         scores = new Scores(0, 0);
     }
 
+    public Room(Room room) {
+        name = room.getName();
+        board = new Board(room.getBoard());
+        bluePlayer = room.getBluePlayer();
+        redPlayer = room.getRedPlayer();
+        id = room.getId();
+        scores = room.getScores();
+    }
+
     public Board getBoard() {
         return board;
     }

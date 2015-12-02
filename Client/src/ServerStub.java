@@ -100,7 +100,8 @@ public class ServerStub implements IServer {
 
     @Override
     public void takeEdge(BoardChange boardChange, UUID roomId) {
-        System.out.println("Board change in " + roomId);
+        System.out.println("Board change in " + roomId + "\n take edge " +
+                boardChange.getI() + " " + boardChange.getJ());
         Room room = rooms.stream().
                 filter(p -> p.getId() == roomId).findFirst().get();
         Board board = room.getBoard();

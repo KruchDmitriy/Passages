@@ -21,6 +21,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Comparator;
 import java.util.List;
@@ -212,15 +213,16 @@ public class View {
 
             drawBoard(gc, width, height, 20);
 
-            scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    double x = event.getX();
-                    double y = event.getY();
-                    Edge edge = board.getVerticalEdges().stream().
-                            filter(p -> p.isNeighbour(x, y)).findFirst().get();
-                }
-                }
+            scene.setOnMouseClicked(event -> {
+                double x = event.getX();
+                double y = event.getY();
+                Edge edge = board.getEdges().stream().
+                        filter(p -> p.isNeighbour(x, y)).findFirst().get();
+                BoardChange boardChange = new BoardChange(
+                        edge.getI(), edge.getJ(), edge.getType(),
+                        Edge.WHO.fromColor(player.getColor()));
+                connection.takeEdge(boardChange, room.getId());
+            }
             );
 
 
@@ -270,10 +272,10 @@ public class View {
                     }
                     gc.strokeLine(i * gridSizeW + padd, j * gridSizeH + padd,
                             i * gridSizeW + padd, (j + 1) * gridSizeH + padd);
-                    hEdge.setP1(new javafx.geometry.Point2D(
+                    vEdge.setP1(new javafx.geometry.Point2D(
                             i * gridSizeW + padd,
                             j * gridSizeH + padd));
-                    hEdge.setP2(new javafx.geometry.Point2D(
+                    vEdge.setP2(new javafx.geometry.Point2D(
                             i * gridSizeW + padd,
                             (j + 1) * gridSizeH + padd));
                 }
