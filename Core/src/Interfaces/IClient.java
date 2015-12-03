@@ -18,5 +18,5 @@ public interface IClient extends Remote {
     void setRoom(Room room) throws RemoteException;
     void setPlayerColor(Player.Color color) throws RemoteException;
     void gameOver() throws RemoteException;
-    public void error(String errorMessage) throws RemoteException;
+    void error(String errorMessage) throws RemoteException;
 }
