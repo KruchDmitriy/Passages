@@ -1,43 +1,40 @@
 package DataStructures;
 
 import java.io.Serializable;
+import java.util.Vector;
 
-/**
- * Created by VladVin on 17.10.2015.
- */
 public class Cell implements Serializable {
-    public enum WHOS {PBLUE, PRED, NONE}
-    private WHOS left;
-    private WHOS top;
-    private WHOS reservedBy;
+    private Vector<Edge> edges;
+    private Edge.WHO reservedBy;
 
     public Cell() {
-        this.left = WHOS.NONE;
-        this.top = WHOS.NONE;
-        this.reservedBy = WHOS.NONE;
+        this.reservedBy = Edge.WHO.NONE;
     }
 
-    public WHOS getLeft() {
-        return left;
+    public Cell(Vector<Edge> edges) {
+        assert edges.size() == 4;
+        this.edges = edges;
     }
 
-    public WHOS getTop() {
-        return top;
-    }
-
-    public WHOS getReservedBy() {
+    public Edge.WHO getReservedBy() {
         return reservedBy;
     }
 
-    public void setLeft(WHOS left) {
-        this.left = left;
+    public void refresh() {
+        Edge.WHO who = edges.elementAt(0).getReservedBy();
+        if (who == edges.elementAt(1).getReservedBy() &&
+                who == edges.elementAt(2).getReservedBy() &&
+                who == edges.elementAt(3).getReservedBy()) {
+            reservedBy = who;
+        }
     }
 
-    public void setTop(WHOS top) {
-        this.top = top;
-    }
-
-    public void setReservedBy(WHOS reservedBy) {
-        this.reservedBy = reservedBy;
+    public boolean isInCell(Edge edge) {
+        for (Edge e : edges) {
+            if (e == edge) {
+                return true;
+            }
+        }
+        return false;
     }
 }
