@@ -1,8 +1,12 @@
 import DataStructures.Board;
 import DataStructures.BoardChange;
+import Exceptions.ServerRemoteException;
 import Interfaces.IClient;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.UUID;
 
 public class Player{
@@ -13,11 +17,19 @@ public class Player{
 
     private IClient client;
 
-    public Player(String name, UUID id) {
+    public Player(String name, UUID id) throws ServerRemoteException {
         this.playerName = name;
         this.id = id;
-        // TODO: Find client
-        this.client = client;
+        try {
+            Registry registry = LocateRegistry.getRegistry(33333);
+            try {
+                this.client = (IClient) registry.lookup("Client/" + id);
+            } catch (NotBoundException e) {
+                throw new ServerRemoteException(ServerRemoteException.Code.PLAYER_NOT_REGISTERED);
+            }
+        } catch (RemoteException e) {
+            throw new ServerRemoteException(ServerRemoteException.Code.PLAYER_NOT_REGISTERED);
+        }
     }
 
     public String getPlayerName() {

@@ -40,16 +40,21 @@ public class Room {
 
     public synchronized void leaveRoom(UUID playerId) {
         if (bluePlayerInfo != null) {
+            bluePlayerInfo.getRight().setColor(Color.NONE);
+        }
+        if (redPlayerInfo != null) {
+            redPlayerInfo.getRight().setColor(Color.NONE);
+        }
+        if (bluePlayerInfo != null) {
             if (bluePlayerInfo.getLeft().equals(playerId)) {
                 bluePlayerInfo = redPlayerInfo;
+                redPlayerInfo = null;
             }
         } else if (redPlayerInfo != null) {
-            if (bluePlayerInfo.getLeft().equals(playerId)) {
+            if (redPlayerInfo.getLeft().equals(playerId)) {
                 redPlayerInfo = null;
             }
         }
-        bluePlayerInfo.getRight().setColor(Color.NONE);
-        redPlayerInfo.getRight().setColor(Color.NONE);
     }
 
     public synchronized void takeEdge(BoardChange boardChange) throws ServerRemoteException {

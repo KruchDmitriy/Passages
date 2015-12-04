@@ -4,6 +4,7 @@ import Interfaces.IClient;
 import Interfaces.IServer;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,16 +13,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Server implements IServer {
+public class Server extends UnicastRemoteObject implements IServer {
     // All operations on the server are synchronized
     Logger logger = Logger.getLogger(Server.class.getName());
 
     private ConcurrentHashMap<UUID, Room> rooms;
     private ConcurrentHashMap<UUID, Player> players;
 
-    public Server() {
+    public Server() throws RemoteException {
+        super();
         this.rooms = new ConcurrentHashMap<>();
         this.players = new ConcurrentHashMap<>();
+        logger.log(Level.INFO, "Server has been started");
     }
 
     @Override
