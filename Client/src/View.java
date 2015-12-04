@@ -1,6 +1,7 @@
 import DataStructures.*;
+import com.sun.xml.internal.fastinfoset.algorithm.UUIDEncodingAlgorithm;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -11,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -21,10 +21,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.Vector;
 
 public class View {
@@ -35,12 +33,14 @@ public class View {
     private double height = 275;
 
     private Player player;
+    private List<RoomInfo> rooms;
     private Room room;
     private BoardView boardView;
 
     View(Stage stage, Connection connection) {
         this.stage = stage;
         this.connection = connection;
+        start();
     }
 
     public void start() {
@@ -48,6 +48,7 @@ public class View {
     }
 
     public void registration() {
+        setWindowSize(400, 275);
         stage.setTitle("Passages");
 
         GridPane grid = new GridPane();
@@ -71,7 +72,18 @@ public class View {
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
 
-        btn.setOnAction(event -> connection.register(userTextField.getText()));
+        btn.setOnAction(event ->
+        {
+            UUID playerId = UUID.randomUUID();
+            connection.register(userTextField.getText(), playerId);
+            player = new Player(userTextField.getText(), playerId);
+            try {
+                this.rooms = connection.getRooms();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            chooseTheRoom();
+        });
 
         hbBtn.getChildren().add(btn);
         grid.add(hbBtn, 1, 4);
@@ -81,15 +93,15 @@ public class View {
         stage.show();
     }
 
-    public void chooseTheRoom(List<Room> rooms) {
+    public void chooseTheRoom() {
         Button createBtn = new Button("Create room");
         Button joinBtn = new Button("Join room");
 
         HBox hBox = new HBox();
         hBox.setSpacing(10);
         hBox.setPadding(new Insets(10, 5, 5, 10));
-        hBox.getChildren().add(createBtn);
         hBox.getChildren().add(joinBtn);
+        hBox.getChildren().add(createBtn);
 
 
         GridPane createGrid = new GridPane();
@@ -115,9 +127,8 @@ public class View {
 
 
         Vector<String> items = new Vector<>();
-        for (Room r : rooms) {
-            if (r.isFree())
-                items.add(r.getName());
+        for (RoomInfo r : rooms) {
+            items.add(r.getName());
         }
 
         GridPane joinGrid = new GridPane();
@@ -133,9 +144,6 @@ public class View {
         ListView<String> list = new ListView<>();
         list.setItems(FXCollections.observableArrayList(items));
 
-        list.setOnMouseClicked(event ->
-                System.out.println("clicked on " +
-                        list.getSelectionModel().getSelectedItem()));
         joinGrid.add(list, 0, 1);
 
         Button okBtn = new Button("Ok");
@@ -148,21 +156,29 @@ public class View {
         BorderPane borderPane = new BorderPane();
 
         borderPane.setTop(hBox);
-        borderPane.setCenter(createGrid);
+        borderPane.setCenter(joinGrid);
         borderPane.setBottom(hBoxBtn);
 
 
         createBtn.setOnMouseClicked(event -> borderPane.setCenter(createGrid));
-        joinBtn.setOnMouseClicked(event -> borderPane.setCenter(joinGrid));
+        joinBtn.setOnMouseClicked(event -> {
+            rooms = connection.getRooms();
+            chooseTheRoom();
+            borderPane.setCenter(joinGrid);
+        });
         okBtn.setOnMouseClicked(event -> {
             if (borderPane.getCenter() == createGrid) {
-                connection.createRoom(roomTextField.getText(),
+                UUID roomId = connection.createRoom(roomTextField.getText(),
                         Integer.valueOf(sizeTextField.getText()),
                         player.getId());
+
+                room = new Room(new RoomInfo(roomTextField.getText(), roomId,
+                        Integer.valueOf(sizeTextField.getText()), player, null));
+                waitForPlayer();
             } else {
-                String str = list.getSelectionModel().getSelectedItem();
-                Room r = rooms.stream().filter(p -> p.getName() == str)
-                        .findFirst().get();
+                int idx = list.getSelectionModel().getSelectedIndices().get(0);
+                RoomInfo r = rooms.get(idx);
+                room = new Room(r);
                 connection.joinRoom(r.getId(), player.getId());
             }
         });
@@ -172,22 +188,22 @@ public class View {
         stage.show();
     }
 
+    private void waitForPlayer() {
+
+    }
+
+    public void setPlayerColor(Player.Color color) {
+        player.setColor(color);
+    }
+
     public void startGame() {
         boardView = new BoardView(room.getBoard());
-        boardView.draw(stage);
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
+        Platform.runLater(() -> boardView.draw(stage));
     }
 
     public void updateBoard(BoardChange boardChange) {
         room.getBoard().apply(boardChange);
-        boardView.draw(stage);
+        Platform.runLater(() -> boardView.draw(stage));
     }
 
     public void setWindowSize(double width, double height) {

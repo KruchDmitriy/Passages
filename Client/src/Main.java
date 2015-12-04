@@ -9,10 +9,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Connection connection = new Connection(Connection.ConnectionType.DEBUG);
+        Connection connection = new Connection(Connection.ConnectionType.RELEASE);
         View view = new View(primaryStage, connection);
-
-        connection.setView(view);
-        view.start();
+        Client client = new Client(view);
+        connection.setClient(client);
     }
 }

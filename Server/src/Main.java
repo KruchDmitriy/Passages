@@ -11,10 +11,10 @@ import java.rmi.server.UnicastRemoteObject;
 public class Main {
     private final static String serverName = "Server";
 
-    private static void main(String[] args) throws Exception {
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new SecurityManager());
-        }
+    public static void main(String[] args) throws Exception {
+//        if (System.getSecurityManager() == null) {
+//            System.setSecurityManager(new SecurityManager());
+//        }
 
         IServer server = new Server();
         LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
