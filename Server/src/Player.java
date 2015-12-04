@@ -1,5 +1,6 @@
 import DataStructures.Board;
 import DataStructures.BoardChange;
+import DataStructures.RoomInfo;
 import Exceptions.ServerRemoteException;
 import Interfaces.IClient;
 
@@ -7,6 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 import java.util.UUID;
 
 public class Player{
@@ -64,6 +66,13 @@ public class Player{
     public void updateBoard(BoardChange boardChange) {
         try {
             client.updateBoard(boardChange);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+    public void updateRooms(List<RoomInfo> roomInfoList) {
+        try {
+            client.updateRooms(roomInfoList);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
