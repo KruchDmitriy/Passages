@@ -4,6 +4,8 @@ import DataStructures.RoomInfo;
 import Exceptions.ServerRemoteException;
 import Interfaces.IClient;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class Player{
+
+    private final static String clientName = "Client/";
 
     private String playerName;
     private UUID id;
@@ -23,13 +27,8 @@ public class Player{
         this.playerName = name;
         this.id = id;
         try {
-            Registry registry = LocateRegistry.getRegistry(33333);
-            try {
-                this.client = (IClient) registry.lookup("Client/" + id);
-            } catch (NotBoundException e) {
-                throw new ServerRemoteException(ServerRemoteException.Code.PLAYER_NOT_REGISTERED);
-            }
-        } catch (RemoteException e) {
+            this.client = (IClient) Naming.lookup("Client/" + id);
+        } catch (Exception e) {
             throw new ServerRemoteException(ServerRemoteException.Code.PLAYER_NOT_REGISTERED);
         }
     }
