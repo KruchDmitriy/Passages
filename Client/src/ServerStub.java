@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ServerStub implements IServer {
-    Client client;
+public class ServerStub /*implements IServer*/ {
+  /*  Client client;
     ArrayList<Player> players;
     ArrayList<Room> rooms;
 
@@ -31,7 +31,7 @@ public class ServerStub implements IServer {
     }
 
     @Override
-    public void register(String name, UUID playerId, IClient client) {
+    public void register(String name, UUID playerId) {
         System.out.println("Register player " + name);
         Player player = new Player(name, UUID.randomUUID());
         players.add(player);
@@ -106,7 +106,9 @@ public class ServerStub implements IServer {
         List<RoomInfo> roomsInfo = new ArrayList<>();
         for (Room room :
                 rooms) {
-            RoomInfo roomInfo = new RoomInfo(room.getName(), room.getId(), room.getSize(), room.getBluePlayer(), room.getRedPlayer());
+            RoomInfo roomInfo = new RoomInfo(
+                    room.getName(), room.getId(), room.getSize(),
+                    room.getBluePlayer(), room.getRedPlayer());
             roomsInfo.add(roomInfo);
         }
         return roomsInfo;
@@ -126,5 +128,5 @@ public class ServerStub implements IServer {
     @Override
     public void error(String errorMessage) {
         System.out.println("Error: " + errorMessage);
-    }
+    }*/
 }

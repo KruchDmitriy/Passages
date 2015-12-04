@@ -8,22 +8,9 @@ public class Client implements IClient {
     private Player player;
     private Room room;
     private View view;
-    private Connection connection;
 
-    public Client(View view, Connection connection) {
+    public Client(View view) {
         this.view = view;
-        this.connection = connection;
-    }
-
-    @Override
-    public void setPlayer(Player player) {
-        assert player != null;
-
-        if (this.player != null) {
-            connection.sendError("Player already set");
-        }
-        this.player = player;
-        view.setPlayer(player);
     }
 
     public void setPlayerColor(Player.Color color) {
@@ -31,18 +18,8 @@ public class Client implements IClient {
     }
 
     @Override
-    public void updateRooms(List<Room> rooms) {
-        view.setWindowSize(400, 275);
-        view.chooseTheRoom(rooms);
-    }
-
-    @Override
-    public void setRoom(Room room) {
-        assert room.getBoard() != null;
-
-        Room r = new Room(room);
-        this.room = r;
-        view.setRoom(r);
+    public void updateRooms(List<RoomInfo> rooms) {
+        view.setRooms(rooms);
     }
 
     @Override
@@ -59,10 +36,5 @@ public class Client implements IClient {
     @Override
     public void gameOver() {
 
-    }
-
-    @Override
-    public void error(String errorMessage) {
-        System.out.println(errorMessage);
     }
 }
