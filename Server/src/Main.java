@@ -10,8 +10,13 @@ public class Main {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
-        String serverName = "PassagesServer";
-        IServer server = new Server();
+        String serverName = "Server";
+        IServer server = null;
+        try {
+            server = new Server();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         try {
             IServer stub = (IServer) UnicastRemoteObject.exportObject(server, 55555);
             Registry registry = LocateRegistry.getRegistry();
