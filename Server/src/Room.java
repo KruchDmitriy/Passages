@@ -8,9 +8,6 @@ import Exceptions.ServerRemoteException;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
-/**
- * Created by VladVin on 03.12.2015.
- */
 public class Room {
     private String name;
 

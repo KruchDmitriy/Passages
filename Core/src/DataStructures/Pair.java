@@ -1,8 +1,6 @@
 package DataStructures;
 
-/**
- * Created by VladVin on 03.12.2015.
- */
+
 public class Pair<L, R> {
     private L left;
     private R right;

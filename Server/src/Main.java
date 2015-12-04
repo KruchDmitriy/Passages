@@ -5,9 +5,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-/**
- * Created by VladVin on 04.12.2015.
- */
 public class Main {
     private static void main(String[] args) {
         if (System.getSecurityManager() == null) {

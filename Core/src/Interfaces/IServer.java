@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IServer extends Remote {
-    void register(String name, UUID playerId, IClient client) throws RemoteException;
+    void register(String name, UUID playerId) throws RemoteException;
     void joinRoom(UUID roomId, UUID playerId) throws RemoteException;
     UUID createRoom(String roomName, int size, UUID playerId) throws RemoteException;
     void leaveRoom(UUID roomId, UUID playerId) throws RemoteException;
