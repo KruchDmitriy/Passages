@@ -11,22 +11,13 @@ public class Room implements Serializable {
     private Player redPlayer;
     private Scores scores;
 
-    public Room(String name, UUID id, int boardSize, Player bluePlayer, Player redPlayer) {
-        this.name = name;
-        board = new Board(boardSize);
-        this.bluePlayer = bluePlayer;
-        this.redPlayer = redPlayer;
-        this.id = id;
+    public Room(RoomInfo roomInfo) {
+        name = roomInfo.getName();
+        board = new Board(roomInfo.getBoardSize());
+        bluePlayer = roomInfo.getBluePlayer();
+        redPlayer = roomInfo.getRedPlayer();
+        id = roomInfo.getId();
         scores = new Scores(0, 0);
-    }
-
-    public Room(Room room) {
-        name = room.getName();
-        board = new Board(room.getBoard());
-        bluePlayer = room.getBluePlayer();
-        redPlayer = room.getRedPlayer();
-        id = room.getId();
-        scores = room.getScores();
     }
 
     public Board getBoard() {

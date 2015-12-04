@@ -3,9 +3,6 @@ package DataStructures;
 import java.io.Serializable;
 import java.util.UUID;
 
-/**
- * Created by VladVin on 04.12.2015.
- */
 public class RoomInfo implements Serializable {
     private String name;
     private UUID id;
