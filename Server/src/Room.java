@@ -65,6 +65,14 @@ public class Room {
         }
     }
 
+    public boolean isFree() {
+        if (bluePlayerInfo == null && redPlayerInfo == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public String getName() {
         return name;
     }

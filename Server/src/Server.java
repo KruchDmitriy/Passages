@@ -57,6 +57,9 @@ public class Server extends Thread implements IServer {
     public void leaveRoom(UUID roomId, UUID playerId) throws RemoteException {
         Room room = rooms.get(roomId);
         room.leaveRoom(playerId);
+        if (room.isFree()) {
+            rooms.remove(roomId);
+        }
     }
 
     @Override
