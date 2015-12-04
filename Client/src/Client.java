@@ -1,25 +1,21 @@
 import DataStructures.*;
 import Interfaces.IClient;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.UUID;
 
-public class Client implements IClient {
-    private Player player;
-    private Room room;
+public class Client extends UnicastRemoteObject implements IClient {
     private View view;
 
-    public Client(View view) {
+    public Client(View view) throws RemoteException {
+        super();
         this.view = view;
     }
 
     public void setPlayerColor(Player.Color color) {
-        player.setColor(color);
-    }
-
-    @Override
-    public void updateRooms(List<RoomInfo> rooms) {
-        view.setRooms(rooms);
+        view.setPlayerColor(color);
     }
 
     @Override

@@ -1,4 +1,6 @@
 import DataStructures.*;
+import com.sun.xml.internal.fastinfoset.algorithm.UUIDEncodingAlgorithm;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -38,6 +40,7 @@ public class View {
     View(Stage stage, Connection connection) {
         this.stage = stage;
         this.connection = connection;
+        start();
     }
 
     public void start() {
@@ -45,6 +48,7 @@ public class View {
     }
 
     public void registration() {
+        setWindowSize(400, 275);
         stage.setTitle("Passages");
 
         GridPane grid = new GridPane();
@@ -78,7 +82,6 @@ public class View {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            setWindowSize(400, 275);
             chooseTheRoom();
         });
 
@@ -90,10 +93,6 @@ public class View {
         stage.show();
     }
 
-    public void setRooms(List<RoomInfo> rooms) {
-        this.rooms = rooms;
-    }
-
     public void chooseTheRoom() {
         Button createBtn = new Button("Create room");
         Button joinBtn = new Button("Join room");
@@ -101,8 +100,8 @@ public class View {
         HBox hBox = new HBox();
         hBox.setSpacing(10);
         hBox.setPadding(new Insets(10, 5, 5, 10));
-        hBox.getChildren().add(createBtn);
         hBox.getChildren().add(joinBtn);
+        hBox.getChildren().add(createBtn);
 
 
         GridPane createGrid = new GridPane();
@@ -157,22 +156,29 @@ public class View {
         BorderPane borderPane = new BorderPane();
 
         borderPane.setTop(hBox);
-        borderPane.setCenter(createGrid);
+        borderPane.setCenter(joinGrid);
         borderPane.setBottom(hBoxBtn);
 
 
         createBtn.setOnMouseClicked(event -> borderPane.setCenter(createGrid));
-        joinBtn.setOnMouseClicked(event -> borderPane.setCenter(joinGrid));
+        joinBtn.setOnMouseClicked(event -> {
+            rooms = connection.getRooms();
+            chooseTheRoom();
+            borderPane.setCenter(joinGrid);
+        });
         okBtn.setOnMouseClicked(event -> {
             if (borderPane.getCenter() == createGrid) {
-                connection.createRoom(roomTextField.getText(),
+                UUID roomId = connection.createRoom(roomTextField.getText(),
                         Integer.valueOf(sizeTextField.getText()),
                         player.getId());
+
+                room = new Room(new RoomInfo(roomTextField.getText(), roomId,
+                        Integer.valueOf(sizeTextField.getText()), player, null));
                 waitForPlayer();
             } else {
-                String str = list.getSelectionModel().getSelectedItem();
-                RoomInfo r = rooms.stream().filter(p -> p.getName().equals(str))
-                        .findFirst().get();
+                int idx = list.getSelectionModel().getSelectedIndices().get(0);
+                RoomInfo r = rooms.get(idx);
+                room = new Room(r);
                 connection.joinRoom(r.getId(), player.getId());
             }
         });
@@ -186,14 +192,18 @@ public class View {
 
     }
 
+    public void setPlayerColor(Player.Color color) {
+        player.setColor(color);
+    }
+
     public void startGame() {
         boardView = new BoardView(room.getBoard());
-        boardView.draw(stage);
+        Platform.runLater(() -> boardView.draw(stage));
     }
 
     public void updateBoard(BoardChange boardChange) {
         room.getBoard().apply(boardChange);
-        boardView.draw(stage);
+        Platform.runLater(() -> boardView.draw(stage));
     }
 
     public void setWindowSize(double width, double height) {

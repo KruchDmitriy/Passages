@@ -5,8 +5,12 @@ import Exceptions.ServerRemoteException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Room {
+    Logger logger = Logger.getLogger(Room.class.getName());
+
     private String name;
 
     private Board board;
@@ -33,6 +37,7 @@ public class Room {
             redPlayerInfo.getRight().setColor(Color.RED);
             bluePlayerInfo.getRight().startGame();
             redPlayerInfo.getRight().startGame();
+            logger.log(Level.INFO, "Game started");
         }
     }
 
@@ -70,15 +75,6 @@ public class Room {
             return true;
         } else {
             return false;
-        }
-    }
-
-    public void updateRooms(List<RoomInfo> roomInfoList) {
-        if (bluePlayerInfo != null) {
-            bluePlayerInfo.getRight().updateRooms(roomInfoList);
-        }
-        if (redPlayerInfo != null) {
-            redPlayerInfo.getRight().updateRooms(roomInfoList);
         }
     }
 

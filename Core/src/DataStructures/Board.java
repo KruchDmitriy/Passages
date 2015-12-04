@@ -21,14 +21,10 @@ public class Board {
 
         for (int i = 0; i < size + 1; i++) {
             for (int h_j = 0; h_j < size; h_j++) {
-                System.out.println("i " + i + " h_j " + h_j);
-                System.out.println("idx " + (i * (2 * size + 1) + h_j));
                 edges.setElementAt(new Edge(Edge.EdgeType.HORZ, i, h_j),
                         i * (2 * size + 1) + h_j);
             }
             for (int v_i = 0; v_i < size; v_i++) {
-                System.out.println("v_i " + v_i + " i " + i);
-                System.out.println("idx " + (v_i * (2 * size + 1) + size + i));
                 edges.setElementAt(new Edge(Edge.EdgeType.VERT, v_i, i),
                         v_i * (2 * size + 1) + size + i);
             }

@@ -5,10 +5,7 @@ import Interfaces.IServer;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +39,6 @@ public class Server extends UnicastRemoteObject implements IServer {
         Player player = players.get(playerId);
         room.joinRoom(new Pair<>(playerId, player));
         logger.log(Level.INFO, "New room has been created");
-        updateRooms();
         return roomId;
     }
 
@@ -54,7 +50,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
         rooms.get(roomId).joinRoom(new Pair<>(roomId, player));
         logger.log(Level.INFO, "Player has been joined to the room");
-        updateRooms();
+//        updateRooms();
     }
 
     @Override
@@ -69,7 +65,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             rooms.remove(roomId);
             logger.log(Level.INFO, "Room has been deleted");
         }
-        updateRooms();
+//        updateRooms();
     }
 
     @Override
@@ -80,21 +76,40 @@ public class Server extends UnicastRemoteObject implements IServer {
 
     private void updateRooms() {
         List<RoomInfo> roomInfoList = getRooms();
-        Room[] roomList = (Room[]) rooms.values().toArray();
-        for (Room room: roomList) {
-            room.updateRooms(roomInfoList);
+        Iterator<Player> it = players.values().iterator();
+        while (it.hasNext()) {
+            Player player = it.next();
+//            player.updateRooms(roomInfoList);
         }
         logger.log(Level.INFO, "Room list has been broadcast");
     }
 
     @Override
     public List<RoomInfo> getRooms() {
-        UUID[] roomIdList = (UUID[])rooms.keySet().toArray();
-        Room[] roomList = (Room[])rooms.values().toArray();
         List<RoomInfo> roomsInfo = new ArrayList<>();
-        for (int i = 0; i < roomList.length; i++) {
-            UUID roomId = roomIdList[i];
-            Room room = roomList[i];
+//        UUID[] roomIdList = (UUID[])(rooms.keys().toArray());
+//        Room[] roomList = (Room[])(rooms.values().toArray());
+//        while (rooms.keys().hasMoreElements()) {
+//            UUID roomId = rooms.keys().nextElement();
+//            Room room = rooms.values().iterator().next();
+//            rooms.values().iterator().hasNext();
+//            DataStructures.Player bluePlayer = null;
+//            DataStructures.Player redPlayer = null;
+//            if (room.getBluePlayerInfo() != null) {
+//                bluePlayer = new DataStructures.Player(room.getBluePlayerInfo().getRight().getPlayerName(),
+//                        room.getBluePlayerInfo().getLeft());
+//            }
+//            if (room.getRedPlayerInfo() != null) {
+//                redPlayer = new DataStructures.Player(room.getRedPlayerInfo().getRight().getPlayerName(),
+//                        room.getRedPlayerInfo().getLeft());
+//            }
+//            RoomInfo roomInfo = new RoomInfo(room.getRoomName(), roomId, room.getBoard().getSize(), bluePlayer, redPlayer);
+//            roomsInfo.add(roomInfo);
+//        }
+
+        for (int i = 0; i < rooms.keySet().toArray().length; i++) {
+            UUID roomId = (UUID) rooms.keySet().toArray()[i];
+            Room room = (Room) rooms.values().toArray()[i];
             DataStructures.Player bluePlayer = null;
             DataStructures.Player redPlayer = null;
             if (room.getBluePlayerInfo() != null) {

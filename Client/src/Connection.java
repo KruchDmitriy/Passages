@@ -52,12 +52,14 @@ public class Connection {
         }
     }
 
-    public void createRoom(String roomName, int size, UUID playerId) {
+    public UUID createRoom(String roomName, int size, UUID playerId) {
+        UUID id = null;
         try {
-            server.createRoom(roomName, size, playerId);
+            id = server.createRoom(roomName, size, playerId);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        return id;
     }
 
     public void joinRoom(UUID roomId, UUID playerId) {
@@ -68,12 +70,14 @@ public class Connection {
         }
     }
 
-    public List<RoomInfo> getRooms() throws Exception {
+    public List<RoomInfo> getRooms() {
+        List<RoomInfo> rooms = null;
         try {
-            return server.getRooms();
-        } catch (ServerRemoteException e) {
-            throw new Exception("Cannot update room list");
+            rooms = server.getRooms();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return rooms;
     }
 
     public void takeEdge(BoardChange boardChange, UUID roomId) {
