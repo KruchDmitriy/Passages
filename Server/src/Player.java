@@ -5,9 +5,6 @@ import Interfaces.IClient;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
-/**
- * Created by VladVin on 03.12.2015.
- */
 public class Player{
 
     private String playerName;
@@ -16,9 +13,10 @@ public class Player{
 
     private IClient client;
 
-    public Player(String name, UUID id, IClient client) {
+    public Player(String name, UUID id) {
         this.playerName = name;
         this.id = id;
+        // TODO: Find client
         this.client = client;
     }
 

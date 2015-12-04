@@ -12,9 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by VladVin on 03.12.2015.
- */
 public class Server implements IServer {
     // All operations on the server are synchronized
     Logger logger = Logger.getLogger(Server.class.getName());
@@ -28,8 +25,8 @@ public class Server implements IServer {
     }
 
     @Override
-    public void register(String name, UUID playerId, IClient client) throws RemoteException {
-        Player player = new Player(name, playerId, client);
+    public void register(String name, UUID playerId) throws RemoteException {
+        Player player = new Player(name, playerId);
         players.put(playerId, player);
         logger.log(Level.INFO, "New player has been registered");
     }
