@@ -25,7 +25,7 @@ public class Room {
         this.board = new Board(boardSize);
     }
 
-    public void joinRoom(Pair<UUID, Player> playerInfo) throws ServerRemoteException {
+    public synchronized void joinRoom(Pair<UUID, Player> playerInfo) throws ServerRemoteException {
         if (bluePlayerInfo == null) {
             bluePlayerInfo = playerInfo;
         } else if (redPlayerInfo == null) {
@@ -41,7 +41,7 @@ public class Room {
         }
     }
 
-    public void leaveRoom(UUID playerId) {
+    public synchronized void leaveRoom(UUID playerId) {
         if (bluePlayerInfo != null) {
             if (bluePlayerInfo.getLeft().equals(playerId)) {
                 bluePlayerInfo = redPlayerInfo;
@@ -55,7 +55,7 @@ public class Room {
         redPlayerInfo.getRight().setColor(Color.NONE);
     }
 
-    public void takeEdge(BoardChange boardChange) throws ServerRemoteException {
+    public synchronized void takeEdge(BoardChange boardChange) throws ServerRemoteException {
         if (bluePlayerInfo != null && redPlayerInfo != null) {
             board.apply(boardChange);
             bluePlayerInfo.getRight().updateBoard(boardChange);
@@ -65,15 +65,15 @@ public class Room {
         }
     }
 
-    public boolean isFree() {
+    public synchronized boolean isFree() {
         if (bluePlayerInfo == null && redPlayerInfo == null) {
             return true;
         } else {
             return false;
         }
-    }
+      }
 
-    public String getName() {
+    public String getRoomName() {
         return name;
     }
 

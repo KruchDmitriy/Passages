@@ -15,7 +15,7 @@ public interface IServer extends Remote {
     void joinRoom(UUID roomId, UUID playerId) throws RemoteException;
     UUID createRoom(String roomName, int size, UUID playerId) throws RemoteException;
     void leaveRoom(UUID roomId, UUID playerId) throws RemoteException;
-    List<RoomInfo> getRooms(UUID playerId) throws RemoteException;
-    void takeEdge(BoardChange boardChange, UUID roomId, UUID playerId) throws RemoteException;
+    List<RoomInfo> getRooms() throws RemoteException;
+    void takeEdge(BoardChange boardChange, UUID roomId) throws RemoteException;
     void error(String errorMessage) throws RemoteException;
 }

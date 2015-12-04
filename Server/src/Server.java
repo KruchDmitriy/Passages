@@ -8,30 +8,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by VladVin on 03.12.2015.
  */
-public class Server extends Thread implements IServer {
-    private enum Command {NONE, TERMINATE}
+public class Server implements IServer {
+    // All operations on the server are synchronized
+    Logger logger = Logger.getLogger(Server.class.getName());
 
-    private HashMap<UUID, Room> rooms;
-    private HashMap<UUID, Player> players;
-
-    private Command currentCommand = Command.NONE;
-
-    private volatile boolean running = true;
+    private ConcurrentHashMap<UUID, Room> rooms;
+    private ConcurrentHashMap<UUID, Player> players;
 
     public Server() {
-        this.rooms = new HashMap<>();
-        this.players = new HashMap<>();
+        this.rooms = new ConcurrentHashMap<>();
+        this.players = new ConcurrentHashMap<>();
     }
 
     @Override
     public void register(String name, UUID playerId, IClient client) throws RemoteException {
         Player player = new Player(name, playerId, client);
-        player.start();
         players.put(playerId, player);
+        logger.log(Level.INFO, "New player has been registered");
     }
 
     @Override
@@ -41,6 +41,7 @@ public class Server extends Thread implements IServer {
         rooms.put(roomId, room);
         Player player = players.get(playerId);
         room.joinRoom(new Pair<>(playerId, player));
+        logger.log(Level.INFO, "New room has been created");
         return roomId;
     }
 
@@ -51,19 +52,25 @@ public class Server extends Thread implements IServer {
             throw new ServerRemoteException(ServerRemoteException.Code.PLAYER_NOT_REGISTERED);
         }
         rooms.get(roomId).joinRoom(new Pair<>(roomId, player));
+        logger.log(Level.INFO, "Player has been joined to the room");
     }
 
     @Override
-    public void leaveRoom(UUID roomId, UUID playerId) throws RemoteException {
+    public synchronized void leaveRoom(UUID roomId, UUID playerId) throws RemoteException {
         Room room = rooms.get(roomId);
+        if (room == null) {
+            throw new ServerRemoteException(ServerRemoteException.Code.ROOM_NOT_CREATED);
+        }
         room.leaveRoom(playerId);
+        logger.log(Level.INFO, "Player has been leaved the room");
         if (room.isFree()) {
             rooms.remove(roomId);
+            logger.log(Level.INFO, "Room has been deleted");
         }
     }
 
     @Override
-    public List<RoomInfo> getRooms(UUID playerId) throws RemoteException {
+    public List<RoomInfo> getRooms() throws RemoteException {
         UUID[] roomIdList = (UUID[])rooms.keySet().toArray();
         Room[] roomList = (Room[])rooms.values().toArray();
         List<RoomInfo> roomsInfo = new ArrayList<>();
@@ -80,42 +87,21 @@ public class Server extends Thread implements IServer {
                 redPlayer = new DataStructures.Player(room.getRedPlayerInfo().getRight().getPlayerName(),
                         room.getRedPlayerInfo().getLeft());
             }
-            RoomInfo roomInfo = new RoomInfo(room.getName(), roomId, room.getBoard().getSize(), bluePlayer, redPlayer);
+            RoomInfo roomInfo = new RoomInfo(room.getRoomName(), roomId, room.getBoard().getSize(), bluePlayer, redPlayer);
             roomsInfo.add(roomInfo);
         }
+        logger.log(Level.INFO, "Rooms list has been sent");
         return roomsInfo;
     }
 
     @Override
-    public void takeEdge(BoardChange boardChange, UUID roomId, UUID playerId) throws RemoteException {
+    public void takeEdge(BoardChange boardChange, UUID roomId) throws RemoteException {
         rooms.get(roomId).takeEdge(boardChange);
+        logger.log(Level.INFO, "Board change has been applied");
     }
 
     @Override
     public void error(String errorMessage) throws RemoteException {
 
-    }
-
-    @Override
-    public void run() {
-        super.run();
-
-        while (running) {
-            try {
-                currentCommand.wait();
-            } catch (InterruptedException e) {
-                break;
-            }
-            switch (currentCommand) {
-                case TERMINATE:
-                    return;
-            }
-        }
-    }
-
-    public void terminate() {
-        running = false;
-        currentCommand = Command.TERMINATE;
-        currentCommand.notify();
     }
 }
