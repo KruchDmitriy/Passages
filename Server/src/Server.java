@@ -42,6 +42,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         Player player = players.get(playerId);
         room.joinRoom(new Pair<>(playerId, player));
         logger.log(Level.INFO, "New room has been created");
+        updateRooms();
         return roomId;
     }
 
@@ -53,6 +54,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
         rooms.get(roomId).joinRoom(new Pair<>(roomId, player));
         logger.log(Level.INFO, "Player has been joined to the room");
+        updateRooms();
     }
 
     @Override
@@ -67,10 +69,26 @@ public class Server extends UnicastRemoteObject implements IServer {
             rooms.remove(roomId);
             logger.log(Level.INFO, "Room has been deleted");
         }
+        updateRooms();
     }
 
     @Override
-    public List<RoomInfo> getRooms() throws RemoteException {
+    public void takeEdge(BoardChange boardChange, UUID roomId) throws RemoteException {
+        rooms.get(roomId).takeEdge(boardChange);
+        logger.log(Level.INFO, "Board change has been applied");
+    }
+
+    private void updateRooms() {
+        List<RoomInfo> roomInfoList = getRooms();
+        Room[] roomList = (Room[]) rooms.values().toArray();
+        for (Room room: roomList) {
+            room.updateRooms(roomInfoList);
+        }
+        logger.log(Level.INFO, "Room list has been broadcast");
+    }
+
+    @Override
+    public List<RoomInfo> getRooms() {
         UUID[] roomIdList = (UUID[])rooms.keySet().toArray();
         Room[] roomList = (Room[])rooms.values().toArray();
         List<RoomInfo> roomsInfo = new ArrayList<>();
@@ -90,18 +108,7 @@ public class Server extends UnicastRemoteObject implements IServer {
             RoomInfo roomInfo = new RoomInfo(room.getRoomName(), roomId, room.getBoard().getSize(), bluePlayer, redPlayer);
             roomsInfo.add(roomInfo);
         }
-        logger.log(Level.INFO, "Rooms list has been sent");
+        logger.log(Level.INFO, "Room list has been sent");
         return roomsInfo;
-    }
-
-    @Override
-    public void takeEdge(BoardChange boardChange, UUID roomId) throws RemoteException {
-        rooms.get(roomId).takeEdge(boardChange);
-        logger.log(Level.INFO, "Board change has been applied");
-    }
-
-    @Override
-    public void error(String errorMessage) throws RemoteException {
-
     }
 }

@@ -1,11 +1,9 @@
-import DataStructures.Board;
-import DataStructures.BoardChange;
+import DataStructures.*;
 import DataStructures.Player.Color;
-import DataStructures.Pair;
-import DataStructures.Scores;
 import Exceptions.ServerRemoteException;
 
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.UUID;
 
 public class Room {
@@ -73,7 +71,16 @@ public class Room {
         } else {
             return false;
         }
-      }
+    }
+
+    public void updateRooms(List<RoomInfo> roomInfoList) {
+        if (bluePlayerInfo != null) {
+            bluePlayerInfo.getRight().updateRooms(roomInfoList);
+        }
+        if (redPlayerInfo != null) {
+            redPlayerInfo.getRight().updateRooms(roomInfoList);
+        }
+    }
 
     public String getRoomName() {
         return name;
