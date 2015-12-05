@@ -93,7 +93,7 @@ public class Board {
                 collect(Collectors.toList());
         for (Cell c: active_cells) {
             Edge.WHO cellStat = c.getReservedBy();
-            c.refresh();
+            c.refresh(boardChange.getReservedBy());
             if (cellStat != c.getReservedBy()) {
                 return true;
             }
@@ -104,7 +104,6 @@ public class Board {
     public Scores calcScores() {
         Scores scores = new Scores(0, 0);
         for (Cell c : cells) {
-            c.refresh();
             if (c.getReservedBy() == Edge.WHO.BLUE) {
                 scores.incBlueScore();
             } else if (c.getReservedBy() == Edge.WHO.RED) {

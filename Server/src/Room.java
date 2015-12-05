@@ -37,6 +37,8 @@ public class Room {
             redPlayerInfo.getRight().setColor(Color.RED);
             bluePlayerInfo.getRight().startGame();
             redPlayerInfo.getRight().startGame();
+            bluePlayerInfo.getRight().isYourTurn(true);
+            redPlayerInfo.getRight().isYourTurn(false);
             logger.log(Level.INFO, "Game started");
         }
     }
@@ -62,9 +64,20 @@ public class Room {
 
     public synchronized void takeEdge(BoardChange boardChange) throws ServerRemoteException {
         if (bluePlayerInfo != null && redPlayerInfo != null) {
-            board.apply(boardChange);
-            bluePlayerInfo.getRight().updateBoard(boardChange);
-            redPlayerInfo.getRight().updateBoard(boardChange);
+            try {
+                boolean myStep = board.apply(boardChange);
+                bluePlayerInfo.getRight().updateBoard(boardChange);
+                redPlayerInfo.getRight().updateBoard(boardChange);
+                if (boardChange.getReservedBy() == Edge.WHO.BLUE) {
+                    bluePlayerInfo.getRight().isYourTurn(myStep);
+                    redPlayerInfo.getRight().isYourTurn(!myStep);
+                } else {
+                    bluePlayerInfo.getRight().isYourTurn(!myStep);
+                    redPlayerInfo.getRight().isYourTurn(myStep);
+                }
+            } catch (IllegalStateException e) {
+
+            }
         } else {
             throw new ServerRemoteException(ServerRemoteException.Code.GAME_NOT_STARTED);
         }
