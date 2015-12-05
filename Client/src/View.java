@@ -212,6 +212,12 @@ public class View {
 
     public void updateBoard(BoardChange boardChange) {
         room.getBoard().apply(boardChange);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
         Platform.runLater(() -> boardView.draw(stage));
     }
 
@@ -264,34 +270,38 @@ public class View {
                         }}
             );
 
-
-            Font font = Font.font("Helvetica", FontWeight.BOLD, 24);
-            gc.setFont(font);
+            Font labelFont = Font.font("Calibri", FontWeight.BOLD, 24);
+            Font nameFont = Font.font("Calibri", FontWeight.BOLD, 24);
+            Font scoreFont = Font.font("Calibri", FontWeight.BOLD, 50);
+            Font messageFont = Font.font("Calibrin", FontWeight.BOLD, 36);
+            gc.setFont(nameFont);
             gc.setStroke(Color.BLACK);
             gc.setLineWidth(1);
 
             Scores scores = room.getScores();
 
             Text bluePlayerLabel = new Text("Blue");
-            bluePlayerLabel.setFont(font);
+            bluePlayerLabel.setFont(labelFont);
             Text bluePlayerName = new Text(room.getBluePlayer().getName());
-            bluePlayerName.setFont(font);
+            bluePlayerName.setFont(nameFont);
             Text blueScore = new Text(String.valueOf(scores.getBlueScore()));
-            blueScore.setFont(font);
+            blueScore.setFont(scoreFont);
 
             VBox blueVBox = new VBox();
+            blueVBox.setAlignment(Pos.CENTER);
             blueVBox.getChildren().add(bluePlayerLabel);
             blueVBox.getChildren().add(bluePlayerName);
             blueVBox.getChildren().add(blueScore);
 
             Text redPlayerLabel = new Text("Red");
-            redPlayerLabel.setFont(font);
+            redPlayerLabel.setFont(labelFont);
             Text redPlayerName = new Text(room.getRedPlayer().getName());
-            redPlayerName.setFont(font);
+            redPlayerName.setFont(nameFont);
             Text redScore = new Text(String.valueOf(scores.getRedScore()));
-            redScore.setFont(font);
+            redScore.setFont(scoreFont);
 
             VBox redVBox = new VBox();
+            redVBox.setAlignment(Pos.CENTER);
             redVBox.getChildren().add(redPlayerLabel);
             redVBox.getChildren().add(redPlayerName);
             redVBox.getChildren().add(redScore);
@@ -302,7 +312,7 @@ public class View {
             } else {
                 message = new Text("Opponent turn");
             }
-            message.setFont(font);
+            message.setFont(messageFont);
             HBox messageBox = new HBox(message);
             messageBox.setAlignment(Pos.CENTER);
 
@@ -366,9 +376,9 @@ public class View {
                 if (c.getReservedBy() == Edge.WHO.RED) {
                     gc.setFill(Color.CORAL);
                 } else if (c.getReservedBy() == Edge.WHO.BLUE) {
-                    gc.setFill(Color.ALICEBLUE);
+                    gc.setFill(Color.LIGHTBLUE);
                 } else {
-                    return;
+                    continue;
                 }
 
                 double x = c.getUpLeftCorner().getX() + 5;
