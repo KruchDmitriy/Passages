@@ -32,7 +32,7 @@ public class Client extends UnicastRemoteObject implements IClient {
 
     @Override
     public void gameOver() {
-
+        view.gameOver();
     }
 
     @Override

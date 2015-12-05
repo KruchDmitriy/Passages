@@ -206,13 +206,13 @@ public class View {
     }
 
     public void startGame() {
-        boardView = new BoardView(room.getBoard());
-        Platform.runLater(() -> boardView.draw(stage));
+        boardView = new BoardView(stage, room.getBoard());
+        Platform.runLater(() -> boardView.draw());
     }
 
     public void updateBoard(BoardChange boardChange) {
         room.getBoard().apply(boardChange);
-        Platform.runLater(() -> boardView.draw(stage));
+        Platform.runLater(() -> boardView.draw());
     }
 
     public void setWindowSize(double width, double height) {
@@ -221,19 +221,23 @@ public class View {
     }
 
     private class BoardView {
+        private Stage stage;
         private Board board;
         private boolean myTurn;
+        private boolean gameOver;
 
-        public BoardView(Board board) {
+        public BoardView(Stage stage, Board board) {
+            this.stage = stage;
             this.board = board;
             this.myTurn = false;
+            this.gameOver = false;
         }
 
         public void setMyTurn(boolean myTurn) {
             this.myTurn = myTurn;
         }
 
-        public void draw(Stage stage) {
+        public void draw() {
             Group root = new Group();
 
             Scene scene = new Scene(root, width, height);
@@ -299,17 +303,37 @@ public class View {
             Text message;
             if (myTurn) {
                 message = new Text("Your turn");
+                if (player.getColor() == Player.Color.RED) {
+                    message.setFill(Color.CORAL);
+                } else {
+                    message.setFill(Color.LIGHTBLUE);
+                }
             } else {
                 message = new Text("Opponent turn");
+                if (player.getColor() == Player.Color.RED) {
+                    message.setFill(Color.LIGHTBLUE);
+                } else {
+                    message.setFill(Color.CORAL);
+                }
+            }
+
+            if (gameOver) {
+                message = new Text("Game over");
+                message.setFill(Color.BLACK);
             }
             message.setFont(font);
             HBox messageBox = new HBox(message);
             messageBox.setAlignment(Pos.CENTER);
 
+            Button leaveBtn = new Button("Leave room");
+            HBox buttonBox = new HBox(leaveBtn);
+            buttonBox.setAlignment(Pos.CENTER);
+
             borderPane.setCenter(canvas);
             borderPane.setLeft(blueVBox);
             borderPane.setRight(redVBox);
             borderPane.setTop(messageBox);
+            borderPane.setBottom(buttonBox);
 
             root.getChildren().add(borderPane);
             stage.setScene(scene);
@@ -366,9 +390,9 @@ public class View {
                 if (c.getReservedBy() == Edge.WHO.RED) {
                     gc.setFill(Color.CORAL);
                 } else if (c.getReservedBy() == Edge.WHO.BLUE) {
-                    gc.setFill(Color.ALICEBLUE);
+                    gc.setFill(Color.LIGHTBLUE);
                 } else {
-                    return;
+                    continue;
                 }
 
                 double x = c.getUpLeftCorner().getX() + 5;
@@ -379,9 +403,13 @@ public class View {
                 gc.fillRect(x, y, w, h);
             }
         }
+
+        public void setGameOver(boolean gameOver) {
+            this.gameOver = gameOver;
+        }
     }
 
     public void gameOver() {
-
+        boardView.setGameOver(true);
     }
 }
