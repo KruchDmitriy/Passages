@@ -112,4 +112,13 @@ public class Board {
         }
         return scores;
     }
+
+    public boolean isFinish() {
+        for (Cell cell : cells) {
+            if (cell.getReservedBy() == Edge.WHO.NONE) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
