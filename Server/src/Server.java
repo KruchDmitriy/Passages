@@ -37,7 +37,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         UUID roomId = UUID.randomUUID();
         rooms.put(roomId, room);
         Player player = players.get(playerId);
-        room.joinRoom(new Pair<>(playerId, player));
+        room.joinRoom(roomId, new Pair<>(playerId, player));
         logger.log(Level.INFO, "New room has been created");
         return roomId;
     }
@@ -48,7 +48,7 @@ public class Server extends UnicastRemoteObject implements IServer {
         if (player == null) {
             throw new ServerRemoteException(ServerRemoteException.Code.PLAYER_NOT_REGISTERED);
         }
-        rooms.get(roomId).joinRoom(new Pair<>(roomId, player));
+        rooms.get(roomId).joinRoom(roomId, new Pair<>(roomId, player));
         logger.log(Level.INFO, "Player has been joined to the room");
 //        updateRooms();
     }
@@ -87,25 +87,6 @@ public class Server extends UnicastRemoteObject implements IServer {
     @Override
     public List<RoomInfo> getRooms() {
         List<RoomInfo> roomsInfo = new ArrayList<>();
-//        UUID[] roomIdList = (UUID[])(rooms.keys().toArray());
-//        Room[] roomList = (Room[])(rooms.values().toArray());
-//        while (rooms.keys().hasMoreElements()) {
-//            UUID roomId = rooms.keys().nextElement();
-//            Room room = rooms.values().iterator().next();
-//            rooms.values().iterator().hasNext();
-//            DataStructures.Player bluePlayer = null;
-//            DataStructures.Player redPlayer = null;
-//            if (room.getBluePlayerInfo() != null) {
-//                bluePlayer = new DataStructures.Player(room.getBluePlayerInfo().getRight().getPlayerName(),
-//                        room.getBluePlayerInfo().getLeft());
-//            }
-//            if (room.getRedPlayerInfo() != null) {
-//                redPlayer = new DataStructures.Player(room.getRedPlayerInfo().getRight().getPlayerName(),
-//                        room.getRedPlayerInfo().getLeft());
-//            }
-//            RoomInfo roomInfo = new RoomInfo(room.getRoomName(), roomId, room.getBoard().getSize(), bluePlayer, redPlayer);
-//            roomsInfo.add(roomInfo);
-//        }
 
         for (int i = 0; i < rooms.keySet().toArray().length; i++) {
             UUID roomId = (UUID) rooms.keySet().toArray()[i];

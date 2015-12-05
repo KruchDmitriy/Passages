@@ -33,7 +33,7 @@ public class Board {
         cells = new Vector<Cell>(size * size);
         for (int i = 0; i < size * size; i++) {
             Vector<Edge> edgeCell = new Vector<>(4);
-            int idx = i / (2 * size + 1) * (2 * size + 1) + i % size;
+            int idx = i / size * (2 * size + 1) + i % size;
             edgeCell.add(edges.elementAt(idx));
             edgeCell.add(edges.elementAt(idx + size));
             edgeCell.add(edges.elementAt(idx + size + 1));
@@ -91,12 +91,16 @@ public class Board {
         List<Cell> active_cells = cells.stream().
                 filter(p -> p.isInCell(edge)).
                 collect(Collectors.toList());
+        boolean flag = false;
         for (Cell c: active_cells) {
             Edge.WHO cellStat = c.getReservedBy();
             c.refresh(boardChange.getReservedBy());
             if (cellStat != c.getReservedBy()) {
-                return true;
+                flag = true;
             }
+        }
+        if (flag) {
+            return true;
         }
         return false;
     }
@@ -111,6 +115,10 @@ public class Board {
             }
         }
         return scores;
+    }
+
+    public Vector<Cell> getCells() {
+        return cells;
     }
 
     public boolean isFinish() {

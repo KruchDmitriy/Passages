@@ -2,6 +2,7 @@ package DataStructures;
 
 import java.io.Serializable;
 import java.util.Vector;
+import javafx.geometry.Point2D;
 
 public class Cell implements Serializable {
     private Vector<Edge> edges;
@@ -14,6 +15,7 @@ public class Cell implements Serializable {
     public Cell(Vector<Edge> edges) {
         assert edges.size() == 4;
         this.edges = edges;
+        reservedBy = Edge.WHO.NONE;
     }
 
     public Edge.WHO getReservedBy() {
@@ -36,5 +38,13 @@ public class Cell implements Serializable {
             }
         }
         return false;
+    }
+
+    public Point2D getUpLeftCorner() {
+        return edges.elementAt(0).getP1();
+    }
+
+    public Point2D getBottomRightCorner() {
+        return edges.elementAt(3).getP2();
     }
 }
