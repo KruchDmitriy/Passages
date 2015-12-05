@@ -24,8 +24,9 @@ public class Client extends UnicastRemoteObject implements IClient {
     }
 
     @Override
-    public void startGame() {
-        view.setWindowSize(500, 500);
+    public void startGame(RoomInfo roomInfo) {
+        view.setWindowSize(500, 400);
+        view.setRoom(new Room(roomInfo));
         view.startGame();
     }
 

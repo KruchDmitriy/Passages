@@ -2,6 +2,7 @@ import DataStructures.*;
 import com.sun.xml.internal.fastinfoset.algorithm.UUIDEncodingAlgorithm;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -15,7 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -169,17 +172,14 @@ public class View {
         });
         okBtn.setOnMouseClicked(event -> {
             if (borderPane.getCenter() == createGrid) {
-                UUID roomId = connection.createRoom(roomTextField.getText(),
+                connection.createRoom(roomTextField.getText(),
                         Integer.valueOf(sizeTextField.getText()),
                         player.getId());
 
-                room = new Room(new RoomInfo(roomTextField.getText(), roomId,
-                        Integer.valueOf(sizeTextField.getText()), player, null));
                 waitForPlayer();
             } else {
                 int idx = list.getSelectionModel().getSelectedIndices().get(0);
                 RoomInfo r = rooms.get(idx);
-                room = new Room(r);
                 connection.joinRoom(r.getId(), player.getId());
             }
         });
@@ -187,6 +187,10 @@ public class View {
         Scene scene = new Scene(borderPane, width, height);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     private void waitForPlayer() {
@@ -231,32 +235,33 @@ public class View {
 
         public void draw(Stage stage) {
             Group root = new Group();
+
             Scene scene = new Scene(root, width, height);
 
-            Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
-            root.getChildren().add(canvas);
+            BorderPane borderPane = new BorderPane();
 
+            Canvas canvas = new Canvas(width - 200, height - 100);
             GraphicsContext gc = canvas.getGraphicsContext2D();
 
-            drawBoard(gc, width, height, 20);
+            drawBoard(gc, width - 200, height - 100, 20);
 
-            scene.setOnMouseClicked(event -> {
-                if (myTurn){
-                double x = event.getX();
-                double y = event.getY();
-                Edge edge = null;
-                Optional<Edge> edgesOpt = board.getEdges().stream().
-                        filter(p -> p.isNeighbour(x, y)).findFirst();
-                    if (edgesOpt.isPresent()) {
-                        edge = edgesOpt.get();
-                    } else {
-                        return;
-                    }
-                BoardChange boardChange = new BoardChange(
-                        edge.getI(), edge.getJ(), edge.getType(),
-                        Edge.WHO.fromColor(player.getColor()));
-                connection.takeEdge(boardChange, room.getId());
-            }}
+            canvas.setOnMouseClicked(event -> {
+                        if (myTurn) {
+                            double x = event.getX();
+                            double y = event.getY();
+                            Edge edge = null;
+                            Optional<Edge> edgesOpt = board.getEdges().stream().
+                                    filter(p -> p.isNeighbour(x, y)).findFirst();
+                            if (edgesOpt.isPresent()) {
+                                edge = edgesOpt.get();
+                            } else {
+                                return;
+                            }
+                            BoardChange boardChange = new BoardChange(
+                                    edge.getI(), edge.getJ(), edge.getType(),
+                                    Edge.WHO.fromColor(player.getColor()));
+                            connection.takeEdge(boardChange, room.getId());
+                        }}
             );
 
 
@@ -265,6 +270,48 @@ public class View {
             gc.setStroke(Color.BLACK);
             gc.setLineWidth(1);
 
+            Scores scores = room.getScores();
+
+            Text bluePlayerLabel = new Text("Blue");
+            bluePlayerLabel.setFont(font);
+            Text bluePlayerName = new Text(room.getBluePlayer().getName());
+            bluePlayerName.setFont(font);
+            Text blueScore = new Text(String.valueOf(scores.getBlueScore()));
+            blueScore.setFont(font);
+
+            VBox blueVBox = new VBox();
+            blueVBox.getChildren().add(bluePlayerLabel);
+            blueVBox.getChildren().add(bluePlayerName);
+            blueVBox.getChildren().add(blueScore);
+
+            Text redPlayerLabel = new Text("Red");
+            redPlayerLabel.setFont(font);
+            Text redPlayerName = new Text(room.getRedPlayer().getName());
+            redPlayerName.setFont(font);
+            Text redScore = new Text(String.valueOf(scores.getRedScore()));
+            redScore.setFont(font);
+
+            VBox redVBox = new VBox();
+            redVBox.getChildren().add(redPlayerLabel);
+            redVBox.getChildren().add(redPlayerName);
+            redVBox.getChildren().add(redScore);
+
+            Text message;
+            if (myTurn) {
+                message = new Text("Your turn");
+            } else {
+                message = new Text("Opponent turn");
+            }
+            message.setFont(font);
+            HBox messageBox = new HBox(message);
+            messageBox.setAlignment(Pos.CENTER);
+
+            borderPane.setCenter(canvas);
+            borderPane.setLeft(blueVBox);
+            borderPane.setRight(redVBox);
+            borderPane.setTop(messageBox);
+
+            root.getChildren().add(borderPane);
             stage.setScene(scene);
             stage.show();
         }
@@ -279,7 +326,7 @@ public class View {
                     Edge hEdge = board.getEdge(Edge.EdgeType.HORZ, i, j);
                     Edge vEdge = board.getEdge(Edge.EdgeType.VERT, j, i);
 
-                    gc.setLineWidth(4);
+                    gc.setLineWidth(6);
                     if (hEdge.getReservedBy() == Edge.WHO.NONE) {
                         gc.setStroke(Color.GRAY);
                     } else if (hEdge.getReservedBy() == Edge.WHO.BLUE) {
@@ -313,6 +360,23 @@ public class View {
                             i * gridSizeW + padd,
                             (j + 1) * gridSizeH + padd));
                 }
+            }
+
+            for (Cell c : board.getCells()) {
+                if (c.getReservedBy() == Edge.WHO.RED) {
+                    gc.setFill(Color.CORAL);
+                } else if (c.getReservedBy() == Edge.WHO.BLUE) {
+                    gc.setFill(Color.ALICEBLUE);
+                } else {
+                    return;
+                }
+
+                double x = c.getUpLeftCorner().getX() + 5;
+                double y = c.getUpLeftCorner().getY() + 5;
+                double w = c.getBottomRightCorner().getX() - x - 5;
+                double h = c.getBottomRightCorner().getY() - y - 5;
+                System.out.println(x + " " + y + " " + w + " " + h);
+                gc.fillRect(x, y, w, h);
             }
         }
     }

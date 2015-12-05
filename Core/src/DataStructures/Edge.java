@@ -71,4 +71,12 @@ public class Edge {
     public void setP2(Point2D p2) {
         this.p2 = p2;
     }
+
+    public Point2D getP1() {
+        return p1;
+    }
+
+    public Point2D getP2() {
+        return p2;
+    }
 }

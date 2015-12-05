@@ -9,7 +9,6 @@ public class Room implements Serializable {
     private Board board;
     private Player bluePlayer;
     private Player redPlayer;
-    private Scores scores;
 
     public Room(RoomInfo roomInfo) {
         name = roomInfo.getName();
@@ -17,7 +16,6 @@ public class Room implements Serializable {
         bluePlayer = roomInfo.getBluePlayer();
         redPlayer = roomInfo.getRedPlayer();
         id = roomInfo.getId();
-        scores = new Scores(0, 0);
     }
 
     public Board getBoard() {
@@ -60,12 +58,8 @@ public class Room implements Serializable {
         this.redPlayer = redPlayer;
     }
 
-    public void setScores(Scores scores) {
-        this.scores = scores;
-    }
-
     public Scores getScores() {
-        return scores;
+        return board.calcScores();
     }
 
     public boolean isFree() {

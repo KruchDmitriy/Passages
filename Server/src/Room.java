@@ -24,7 +24,7 @@ public class Room {
         this.board = new Board(boardSize);
     }
 
-    public synchronized void joinRoom(Pair<UUID, Player> playerInfo) throws ServerRemoteException {
+    public synchronized void joinRoom(UUID roomId, Pair<UUID, Player> playerInfo) throws ServerRemoteException {
         if (bluePlayerInfo == null) {
             bluePlayerInfo = playerInfo;
         } else if (redPlayerInfo == null) {
@@ -35,8 +35,9 @@ public class Room {
         if (bluePlayerInfo != null && redPlayerInfo != null) {
             bluePlayerInfo.getRight().setColor(Color.BLUE);
             redPlayerInfo.getRight().setColor(Color.RED);
-            bluePlayerInfo.getRight().startGame();
-            redPlayerInfo.getRight().startGame();
+            RoomInfo roomInfo = getRoomInfo(roomId);
+            bluePlayerInfo.getRight().startGame(roomInfo);
+            redPlayerInfo.getRight().startGame(roomInfo);
             bluePlayerInfo.getRight().isYourTurn(true);
             redPlayerInfo.getRight().isYourTurn(false);
             logger.log(Level.INFO, "Game started");
@@ -97,6 +98,21 @@ public class Room {
         } else {
             return false;
         }
+    }
+
+    private RoomInfo getRoomInfo(UUID roomId) {
+        DataStructures.Player bluePlayer = null;
+        DataStructures.Player redPlayer = null;
+        if (bluePlayerInfo != null) {
+            bluePlayer = new DataStructures.Player(bluePlayerInfo.getRight().getPlayerName(),
+                    bluePlayerInfo.getLeft());
+        }
+        if (redPlayerInfo != null) {
+            redPlayer = new DataStructures.Player(redPlayerInfo.getRight().getPlayerName(),
+                    redPlayerInfo.getLeft());
+        }
+        RoomInfo roomInfo = new RoomInfo(name, roomId, board.getSize(), bluePlayer, redPlayer);
+        return roomInfo;
     }
 
     public String getRoomName() {
