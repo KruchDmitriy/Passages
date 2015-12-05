@@ -268,34 +268,38 @@ public class View {
                         }}
             );
 
-
-            Font font = Font.font("Helvetica", FontWeight.BOLD, 24);
-            gc.setFont(font);
+            Font labelFont = Font.font("Calibri", FontWeight.BOLD, 24);
+            Font nameFont = Font.font("Calibri", FontWeight.BOLD, 24);
+            Font scoreFont = Font.font("Calibri", FontWeight.BOLD, 50);
+            Font messageFont = Font.font("Calibrin", FontWeight.BOLD, 36);
+            gc.setFont(nameFont);
             gc.setStroke(Color.BLACK);
             gc.setLineWidth(1);
 
             Scores scores = room.getScores();
 
             Text bluePlayerLabel = new Text("Blue");
-            bluePlayerLabel.setFont(font);
+            bluePlayerLabel.setFont(labelFont);
             Text bluePlayerName = new Text(room.getBluePlayer().getName());
-            bluePlayerName.setFont(font);
+            bluePlayerName.setFont(nameFont);
             Text blueScore = new Text(String.valueOf(scores.getBlueScore()));
-            blueScore.setFont(font);
+            blueScore.setFont(scoreFont);
 
             VBox blueVBox = new VBox();
+            blueVBox.setAlignment(Pos.CENTER);
             blueVBox.getChildren().add(bluePlayerLabel);
             blueVBox.getChildren().add(bluePlayerName);
             blueVBox.getChildren().add(blueScore);
 
             Text redPlayerLabel = new Text("Red");
-            redPlayerLabel.setFont(font);
+            redPlayerLabel.setFont(labelFont);
             Text redPlayerName = new Text(room.getRedPlayer().getName());
-            redPlayerName.setFont(font);
+            redPlayerName.setFont(nameFont);
             Text redScore = new Text(String.valueOf(scores.getRedScore()));
-            redScore.setFont(font);
+            redScore.setFont(scoreFont);
 
             VBox redVBox = new VBox();
+            redVBox.setAlignment(Pos.CENTER);
             redVBox.getChildren().add(redPlayerLabel);
             redVBox.getChildren().add(redPlayerName);
             redVBox.getChildren().add(redScore);
@@ -321,19 +325,27 @@ public class View {
                 message = new Text("Game over");
                 message.setFill(Color.BLACK);
             }
-            message.setFont(font);
+            message.setFont(messageFont);
+            message.setStroke(Color.BLACK);
+            message.setStrokeWidth(1);
             HBox messageBox = new HBox(message);
             messageBox.setAlignment(Pos.CENTER);
 
             Button leaveBtn = new Button("Leave room");
             HBox buttonBox = new HBox(leaveBtn);
             buttonBox.setAlignment(Pos.CENTER);
+            leaveBtn.setOnMouseClicked(event -> {
+                connection.leaveRoom(room.getId(), player.getId());
+                chooseTheRoom();
+            }
+            );
 
             borderPane.setCenter(canvas);
             borderPane.setLeft(blueVBox);
             borderPane.setRight(redVBox);
             borderPane.setTop(messageBox);
             borderPane.setBottom(buttonBox);
+            borderPane.autosize();
 
             root.getChildren().add(borderPane);
             stage.setScene(scene);

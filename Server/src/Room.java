@@ -17,7 +17,6 @@ public class Room {
 
     private Pair<UUID, Player> bluePlayerInfo;
     private Pair<UUID, Player> redPlayerInfo;
-    private Scores scores;
 
     public Room(String name, int boardSize) {
         this.name = name;
@@ -46,12 +45,6 @@ public class Room {
 
     public synchronized void leaveRoom(UUID playerId) {
         if (bluePlayerInfo != null) {
-            bluePlayerInfo.getRight().setColor(Color.NONE);
-        }
-        if (redPlayerInfo != null) {
-            redPlayerInfo.getRight().setColor(Color.NONE);
-        }
-        if (bluePlayerInfo != null) {
             if (bluePlayerInfo.getLeft().equals(playerId)) {
                 bluePlayerInfo = redPlayerInfo;
                 redPlayerInfo = null;
@@ -60,6 +53,14 @@ public class Room {
             if (redPlayerInfo.getLeft().equals(playerId)) {
                 redPlayerInfo = null;
             }
+        }
+        if (bluePlayerInfo != null) {
+            bluePlayerInfo.getRight().setColor(Color.NONE);
+            bluePlayerInfo.getRight().gameOver();
+        }
+        if (redPlayerInfo != null) {
+            redPlayerInfo.getRight().setColor(Color.NONE);
+            redPlayerInfo.getRight().gameOver();
         }
     }
 
@@ -127,9 +128,5 @@ public class Room {
 
     public Pair<UUID, Player> getRedPlayerInfo() {
         return redPlayerInfo;
-    }
-
-    public Scores getScores() {
-        return scores;
     }
 }

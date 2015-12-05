@@ -12,10 +12,6 @@ public class Main {
     private final static String serverName = "Server";
 
     public static void main(String[] args) throws Exception {
-//        if (System.getSecurityManager() == null) {
-//            System.setSecurityManager(new SecurityManager());
-//        }
-
         IServer server = new Server();
         LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
         Naming.rebind(serverName, server);

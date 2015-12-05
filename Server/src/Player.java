@@ -85,11 +85,4 @@ public class Player{
             e.printStackTrace();
         }
     }
-//    public void updateRooms(List<RoomInfo> roomInfoList) {
-//        try {
-//            client.updateRooms(roomInfoList);
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
