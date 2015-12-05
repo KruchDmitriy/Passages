@@ -54,9 +54,9 @@ public class Player{
         }
     }
 
-    public void startGame() {
+    public void startGame(RoomInfo roomInfo) {
         try {
-            client.startGame();
+            client.startGame(roomInfo);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
