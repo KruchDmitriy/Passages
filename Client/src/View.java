@@ -206,8 +206,8 @@ public class View {
     }
 
     public void startGame() {
-        boardView = new BoardView(room.getBoard());
-        Platform.runLater(() -> boardView.draw(stage));
+        boardView = new BoardView(stage, room.getBoard());
+        Platform.runLater(() -> boardView.draw());
     }
 
     public void updateBoard(BoardChange boardChange) {
@@ -326,18 +326,26 @@ public class View {
                 message.setFill(Color.BLACK);
             }
             message.setFont(messageFont);
+            message.setStroke(Color.BLACK);
+            message.setStrokeWidth(1);
             HBox messageBox = new HBox(message);
             messageBox.setAlignment(Pos.CENTER);
 
             Button leaveBtn = new Button("Leave room");
             HBox buttonBox = new HBox(leaveBtn);
             buttonBox.setAlignment(Pos.CENTER);
+            leaveBtn.setOnMouseClicked(event -> {
+                connection.leaveRoom(room.getId(), player.getId());
+                chooseTheRoom();
+            }
+            );
 
             borderPane.setCenter(canvas);
             borderPane.setLeft(blueVBox);
             borderPane.setRight(redVBox);
             borderPane.setTop(messageBox);
             borderPane.setBottom(buttonBox);
+            borderPane.autosize();
 
             root.getChildren().add(borderPane);
             stage.setScene(scene);

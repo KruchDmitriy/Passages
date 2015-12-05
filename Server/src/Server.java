@@ -1,6 +1,5 @@
 import DataStructures.*;
 import Exceptions.ServerRemoteException;
-import Interfaces.IClient;
 import Interfaces.IServer;
 
 import java.rmi.RemoteException;
@@ -50,7 +49,6 @@ public class Server extends UnicastRemoteObject implements IServer {
         }
         rooms.get(roomId).joinRoom(roomId, new Pair<>(roomId, player));
         logger.log(Level.INFO, "Player has been joined to the room");
-//        updateRooms();
     }
 
     @Override
@@ -65,23 +63,12 @@ public class Server extends UnicastRemoteObject implements IServer {
             rooms.remove(roomId);
             logger.log(Level.INFO, "Room has been deleted");
         }
-//        updateRooms();
     }
 
     @Override
     public void takeEdge(BoardChange boardChange, UUID roomId) throws RemoteException {
         rooms.get(roomId).takeEdge(boardChange);
         logger.log(Level.INFO, "Board change has been applied");
-    }
-
-    private void updateRooms() {
-        List<RoomInfo> roomInfoList = getRooms();
-        Iterator<Player> it = players.values().iterator();
-        while (it.hasNext()) {
-            Player player = it.next();
-//            player.updateRooms(roomInfoList);
-        }
-        logger.log(Level.INFO, "Room list has been broadcast");
     }
 
     @Override

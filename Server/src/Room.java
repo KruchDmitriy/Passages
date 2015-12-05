@@ -17,7 +17,6 @@ public class Room {
 
     private Pair<UUID, Player> bluePlayerInfo;
     private Pair<UUID, Player> redPlayerInfo;
-    private Scores scores;
 
     public Room(String name, int boardSize) {
         this.name = name;
@@ -129,9 +128,5 @@ public class Room {
 
     public Pair<UUID, Player> getRedPlayerInfo() {
         return redPlayerInfo;
-    }
-
-    public Scores getScores() {
-        return scores;
     }
 }

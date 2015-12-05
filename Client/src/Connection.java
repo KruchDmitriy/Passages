@@ -70,6 +70,14 @@ public class Connection {
         }
     }
 
+    public void leaveRoom(UUID roomId, UUID playerId) {
+        try {
+            server.leaveRoom(roomId, playerId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<RoomInfo> getRooms() {
         List<RoomInfo> rooms = null;
         try {
