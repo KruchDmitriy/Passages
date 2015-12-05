@@ -77,6 +77,14 @@ public class Player{
             e.printStackTrace();
         }
     }
+
+    public void gameOver() {
+        try {
+            client.gameOver();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 //    public void updateRooms(List<RoomInfo> roomInfoList) {
 //        try {
 //            client.updateRooms(roomInfoList);

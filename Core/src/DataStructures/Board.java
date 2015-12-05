@@ -120,4 +120,13 @@ public class Board {
     public Vector<Cell> getCells() {
         return cells;
     }
+
+    public boolean isFinish() {
+        for (Cell cell : cells) {
+            if (cell.getReservedBy() == Edge.WHO.NONE) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

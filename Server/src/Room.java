@@ -76,6 +76,12 @@ public class Room {
                     bluePlayerInfo.getRight().isYourTurn(!myStep);
                     redPlayerInfo.getRight().isYourTurn(myStep);
                 }
+
+                boolean isFinish = board.isFinish();
+                if (isFinish) {
+                    bluePlayerInfo.getRight().gameOver();
+                    redPlayerInfo.getRight().gameOver();
+                }
             } catch (IllegalStateException e) {
 
             }
