@@ -22,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.Vector;
 
@@ -192,6 +193,10 @@ public class View {
 
     }
 
+    public void setMyTurn(boolean myTurn) {
+        boardView.setMyTurn(myTurn);
+    }
+
     public void setPlayerColor(Player.Color color) {
         player.setColor(color);
     }
@@ -213,9 +218,15 @@ public class View {
 
     private class BoardView {
         private Board board;
+        private boolean myTurn;
 
         public BoardView(Board board) {
             this.board = board;
+            this.myTurn = false;
+        }
+
+        public void setMyTurn(boolean myTurn) {
+            this.myTurn = myTurn;
         }
 
         public void draw(Stage stage) {
@@ -230,15 +241,22 @@ public class View {
             drawBoard(gc, width, height, 20);
 
             scene.setOnMouseClicked(event -> {
+                if (myTurn){
                 double x = event.getX();
                 double y = event.getY();
-                Edge edge = board.getEdges().stream().
-                        filter(p -> p.isNeighbour(x, y)).findFirst().get();
+                Edge edge = null;
+                Optional<Edge> edgesOpt = board.getEdges().stream().
+                        filter(p -> p.isNeighbour(x, y)).findFirst();
+                    if (edgesOpt.isPresent()) {
+                        edge = edgesOpt.get();
+                    } else {
+                        return;
+                    }
                 BoardChange boardChange = new BoardChange(
                         edge.getI(), edge.getJ(), edge.getType(),
                         Edge.WHO.fromColor(player.getColor()));
                 connection.takeEdge(boardChange, room.getId());
-            }
+            }}
             );
 
 

@@ -69,6 +69,14 @@ public class Player{
             e.printStackTrace();
         }
     }
+
+    public void isYourTurn(boolean step) {
+        try {
+            client.isYourTurn(step);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 //    public void updateRooms(List<RoomInfo> roomInfoList) {
 //        try {
 //            client.updateRooms(roomInfoList);

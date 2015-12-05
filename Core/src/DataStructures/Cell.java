@@ -20,13 +20,13 @@ public class Cell implements Serializable {
         return reservedBy;
     }
 
-    public void refresh() {
-        Edge.WHO who = edges.elementAt(0).getReservedBy();
-        if (who == edges.elementAt(1).getReservedBy() &&
-                who == edges.elementAt(2).getReservedBy() &&
-                who == edges.elementAt(3).getReservedBy()) {
-            reservedBy = who;
+    public void refresh(Edge.WHO whoLast) {
+        for (Edge edge : edges) {
+            if (edge.getReservedBy() == Edge.WHO.NONE) {
+                return;
+            }
         }
+        reservedBy = whoLast;
     }
 
     public boolean isInCell(Edge edge) {

@@ -33,4 +33,9 @@ public class Client extends UnicastRemoteObject implements IClient {
     public void gameOver() {
 
     }
+
+    @Override
+    public void isYourTurn(boolean step) throws RemoteException {
+        view.setMyTurn(step);
+    }
 }
