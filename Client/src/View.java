@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -231,11 +232,10 @@ public class View {
 
         public void draw(Stage stage) {
             Group root = new Group();
+
             Scene scene = new Scene(root, width, height);
 
             Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
-            root.getChildren().add(canvas);
-
             GraphicsContext gc = canvas.getGraphicsContext2D();
 
             drawBoard(gc, width, height, 20);
@@ -259,12 +259,30 @@ public class View {
             }}
             );
 
+            Scores scores = room.getScores();
+
+            VBox blueVBox = new VBox();
+            blueVBox.getChildren().add(new Text("bluePlayer"));
+            blueVBox.getChildren().add(new Text());
+            blueVBox.getChildren().add(new Text(String.valueOf(scores.getBlueScore())));
+
+            VBox redVBox = new VBox();
+            redVBox.getChildren().add(new Text("redPlayer"));
+            redVBox.getChildren().add(new Text(room.getRedPlayer().getName()));
+            redVBox.getChildren().add(new Text(String.valueOf(scores.getRedScore())));
 
             Font font = Font.font("Helvetica", FontWeight.BOLD, 24);
             gc.setFont(font);
             gc.setStroke(Color.BLACK);
             gc.setLineWidth(1);
 
+            BorderPane borderPane = new BorderPane();
+            borderPane.setCenter(canvas);
+            borderPane.setLeft(blueVBox);
+            borderPane.setRight(redVBox);
+            borderPane.setTop(new Text(""));
+
+            root.getChildren().add(borderPane);
             stage.setScene(scene);
             stage.show();
         }
